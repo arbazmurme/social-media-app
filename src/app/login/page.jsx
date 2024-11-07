@@ -13,7 +13,7 @@ export default function Login() {
       // Use hosted API URL
       const response = await axios.post('https://arbazmurme.onrender.com/api/auth/login', userData);
       localStorage.setItem('token', response.data.token); // Store the token in localStorage
-      router.push('/'); // Redirect to home page
+      router.push('/');
     } catch (err) {
       setError('Error during login');
     }
