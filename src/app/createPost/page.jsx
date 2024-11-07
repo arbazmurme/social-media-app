@@ -30,7 +30,7 @@ export default function CreatePost() {
         { text },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      router.push('/'); // Redirect to home page after creating post
+      router.push('/');
     } catch (err) {
       setError('Error creating post');
     } finally {

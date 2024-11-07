@@ -24,7 +24,7 @@ export default function Login() {
       {error && <p>{error}</p>}
       <AuthForm type="login" onSubmit={handleLogin} />
       <div className="mt-4 text-center">
-        <p className="text-gray-600">Don't have an account?</p>
+      <p className="text-gray-600">Don&apos;t have an account?</p>
         <button
           onClick={() => router.push('/register')}
           className="mt-2 px-10 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
