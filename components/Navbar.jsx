@@ -2,25 +2,32 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useAuthStatus } from '../hooks/useAuthStatus'; // Import the custom hook
+import { useRouter } from 'next/navigation'; // Use this for client-side navigation
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isLoggedIn, checkAuthStatus } = useAuthStatus(); // Use the custom hook
-  const [isClient, setIsClient] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
+  const [isClient, setIsClient] = useState(false); // Ensure useRouter is used only on the client side
   const router = useRouter();
 
-  // Ensure this runs only on client side
-  useEffect(() => setIsClient(true), []);
+  // Use useEffect to set the isClient flag to true after mounting and check if user is logged in
+  useEffect(() => {
+    setIsClient(true);  // After the component mounts on the client, we can use the router
+    setIsLoggedIn(!!localStorage.getItem('token')); // Check for token in localStorage
+  }, []);
 
+  // Logout handler
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token on logout
-    checkAuthStatus(); // Update login status
-    router.push('/login');
+    // Clear the JWT or session data
+    localStorage.removeItem('token');
+    setIsLoggedIn(false); // Update login status
+    router.push('/login'); // Redirect to the login page
   };
 
-  if (!isClient) return null;
+  // Don't render the component until it has mounted
+  if (!isClient) {
+    return null;  // This prevents rendering the component on the server side
+  }
 
   return (
     <nav className="bg-gray-800 p-4">
@@ -33,7 +40,9 @@ const Navbar = () => {
           <Link href="/" className="text-white hover:text-gray-400">Home</Link>
           <Link href="/createPost" className="text-white hover:text-gray-400">Create Post</Link>
           {isLoggedIn ? (
-            <button onClick={handleLogout} className="text-white hover:text-gray-400">Logout</button>
+            <button 
+              onClick={handleLogout}
+              className="text-white hover:text-gray-400">Logout</button>
           ) : (
             <Link href="/login" className="text-white hover:text-gray-400">Login</Link>
           )}
@@ -51,6 +60,7 @@ const Navbar = () => {
         </button>
       </div>
 
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div id="mobile-menu" className="md:hidden bg-gray-800 text-white p-4 space-y-4">
           <Link href="/" className="block">Home</Link>
